@@ -20,6 +20,13 @@ const ryanairStory = "Ryanair is facing enforcement action from the Civil Aviati
 "were announced. The airline regulator said Ryanair had further transgressed when it announced fresh disruption on Wednesday, " +
 "by failing to tell passengers that they could be rerouted with other airlines if there was no suitable alternative on one of its own planes."
 
+const boeingStory = "The government has warned aircraft manufacturer Boeing it could lose UK defence contracts over its part in a US decision to " +
+"slap punitive tariffs of 219% on rival Bombardier, in a dispute that threatens to sour trade relations between London and Washington. " +
+"Theresa May said she was “bitterly disappointed” by the move to impose a tariff on sales of Bombardier’s C-Series passenger jet, which threatens " +
+"at least 1,000 manufacturing jobs in Northern Ireland. Michael Fallon, the UK defence secretary, stepped up the government’s rhetoric, warning " +
+"that Boeing’s assault on Bombardier “could jeopardise” its chances of securing government contracts. The business secretary, Greg Clark, joined " +
+"the chorus of disapproval, branding the ruling “unjustified” and vowing to work with Canada – where Bombardier is based – to get it overturned."
+
 func main() {
 	ctx := context.Background()
 
@@ -30,7 +37,7 @@ func main() {
 	}
 
 	// Sets the text to analyze.
-	text := ryanairStory
+	text := boeingStory
 
 	// Detects the sentiment of the text.
 	sentiment, err := client.AnalyzeSentiment(ctx, &languagepb.AnalyzeSentimentRequest{
@@ -66,11 +73,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to analyze entities: %v", err)
 	}
-	fmt.Printf("Entites detected: %v", response)
+	//fmt.Printf("Entites detected: %v", response)
+	const SALIENCE_THRESHOLD = 0.05
 	fmt.Println()
 	for i, entity := range response.Entities {
-		fmt.Printf("Entity %v: %+v", i, entity)
-		fmt.Println()
+		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
+			fmt.Printf("Entity %v: %+v", i, entity)
+			fmt.Println()
+		}
 	}
 }
 
