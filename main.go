@@ -46,8 +46,7 @@ func inputHandler(w http.ResponseWriter, r *http.Request) {
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
     body := r.FormValue("body")
-    fmt.Printf(analyseStory(body))
-    http.Redirect(w, r, "/", http.StatusFound)
+    fmt.Fprintf(w, analyseStory(body))
 }
 
 func analyseStory(story string) string {
