@@ -90,7 +90,7 @@ func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
 	for _, company := range results.Companies {
 		companyVm := GetDetailsForCompany(company.ID)
 		companyDetails = append(companyDetails, companyVm)
-		break
+		//break
 	}
 
   return returnString, companyDetails
