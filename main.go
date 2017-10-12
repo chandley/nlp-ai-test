@@ -143,27 +143,16 @@ func main() {
 		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
 			fmt.Printf("Entity %s: %+v", i, entity.Name)
 			fmt.Println(" ")
-      SearchForCompanies(entity.Name)
+			fmt.Println(" ")
+			SearchForCompanies(entity.Name)
+			break
 			//fmt.Println()
 		}
 	}
 
 	//fmt.Println("get company search:\n", string(body))
 
-
-	resp, err := http.Get("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-13323")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	var company Company
-	if err := json.Unmarshal(body, &company); err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Company was %s (%s) with attributes %v", company.Name, company.Description, company.ProductAttributes.Debtwire)
+	GetDetailsForCompany("13323")
 
 	//fmt.Println("get details:\n", string(body))
 
@@ -186,6 +175,26 @@ func SearchForCompanies(companyName string) {
 	}
 
 	fmt.Printf("Got %+v", results)
+}
+
+func GetDetailsForCompany(id string) {
+
+	url:= fmt.Sprintf("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-%s", id)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	var company Company
+	if err := json.Unmarshal(body, &company); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Company was %s (%s) with attributes %v", company.Name, company.Description, company.ProductAttributes.Debtwire)
+
 }
 
 
