@@ -97,9 +97,9 @@ func analyseStory(story string) string {
 	const SALIENCE_THRESHOLD = 0.05
 	returnString += "\n"
 
-	for i, entity := range response.Entities {
+	for _, entity := range response.Entities {
 		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
-			returnString += fmt.Sprintf("Entity %s: %+v", i, entity.Name)
+			returnString += fmt.Sprintf("Organisation:  %+s", entity.Name)
 			returnString += "\n"
 			_, companyVMreturn := search.SearchForCompanies(entity.Name)
 
