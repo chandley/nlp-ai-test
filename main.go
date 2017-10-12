@@ -101,9 +101,7 @@ func analyseStory(story string) {
 			fmt.Printf("Entity %s: %+v", i, entity.Name)
 			fmt.Println(" ")
 			fmt.Println(" ")
-			search.SearchForCompanies(entity.Name)
-			//break
-			//fmt.Println()
+			fmt.Printf(search.SearchForCompanies(entity.Name))
 		}
 	}
 }

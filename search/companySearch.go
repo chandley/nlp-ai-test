@@ -59,7 +59,9 @@ type Company struct {
 }
 
 
-func SearchForCompanies(companyName string) {
+func SearchForCompanies(companyName string) string {
+  returnString := ""
+  
 	url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
 
 	resp, err := http.Get(url)
@@ -75,16 +77,19 @@ func SearchForCompanies(companyName string) {
 	}
 
 	//fmt.Printf("Got %+v", results)
-	fmt.Println("set of results")
+	returnString += "set of results\n"
+
 	sort.Slice(results.Companies, func(i, j int) bool { return results.Companies[i].IntelCount > results.Companies[j].IntelCount })
 	for _, company := range results.Companies {
-		fmt.Println()
-		GetDetailsForCompany(company.ID)
+		returnString += GetDetailsForCompany(company.ID)
 		break
 	}
+
+  return returnString
 }
 
-func GetDetailsForCompany(id string) {
+func GetDetailsForCompany(id string) string {
+  returnString := ""
 
 	url:= fmt.Sprintf("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-%s", id)
 
@@ -100,8 +105,10 @@ func GetDetailsForCompany(id string) {
 		panic(err)
 	}
 
-	fmt.Printf("Company was %s with Sector: %s, Country: %s", company.Name, company.ProductAttributes.Debtwire.DominantSector.Value, company.ProductAttributes.Debtwire.DominantCountry.Value)
-	fmt.Println()
-	fmt.Println(company.Description)
+	returnString += fmt.Sprintf("Company was %s with Sector: %s, Country: %s\n", company.Name, company.ProductAttributes.Debtwire.DominantSector.Value, company.ProductAttributes.Debtwire.DominantCountry.Value)
+	returnString += company.Description
+	returnString += "\n"
 
+  return returnString
 }
+
