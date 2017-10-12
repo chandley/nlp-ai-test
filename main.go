@@ -8,6 +8,7 @@ import (
 	"golang.org/x/net/context"
 	languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
 	"github.com/chandley/nlp-ai-test/search"
+  "net/http"
 )
 
 const appleStory = "Apple has been linked with a shock £1.5bn deal to buy McLaren Technology Group, the Formula One team owner and supercar maker. A deal" +
@@ -30,6 +31,25 @@ const boeingStory = "The government has warned aircraft manufacturer Boeing it c
 
 func main() {
 	analyseStory(boeingStory)
+
+  http.HandleFunc("/", inputHandler)
+  http.HandleFunc("/save", saveHandler)
+  http.ListenAndServe(":8080", nil)
+}
+
+func inputHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "<h1>Paste your story</h1>"+
+        "<form action=\"/save\" method=\"POST\">"+
+        "<textarea name=\"body\">%s</textarea><br>"+
+        "<input type=\"submit\" value=\"Save\">"+
+        "</form>",
+        "Input text here")
+}
+
+func saveHandler(w http.ResponseWriter, r *http.Request) {
+    body := r.FormValue("body")
+    analyseStory(body)
+    http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func analyseStory(story string) {
