@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"sort"
 	"net/http"
+	"net/url"
 )
 
 type SearchResults struct {
@@ -67,10 +68,11 @@ type CompanyViewModel struct {
 func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
   returnString := ""
   
-	url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
+	searchUrl:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", url.PathEscape(companyName))
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(searchUrl)
 	if err != nil {
+		fmt.Printf("get failed with url %s", searchUrl)
 		panic(err)
 	}
 	defer resp.Body.Close()
@@ -78,6 +80,8 @@ func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
 
 	var results SearchResults
 	if err := json.Unmarshal(body, &results); err != nil {
+		fmt.Printf("url was: %s", searchUrl)
+		fmt.Printf("unmarshal failed with return: <<%s>>", string(body))
 		panic(err) // panic
 	}
 
@@ -99,9 +103,9 @@ func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
 func GetDetailsForCompany(id string) CompanyViewModel {
 
 
-	url:= fmt.Sprintf("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-%s", id)
+	companyUrl:= fmt.Sprintf("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-%s", url.PathEscape(id))
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(companyUrl)
 	if err != nil {
 		panic(err)
 	}
