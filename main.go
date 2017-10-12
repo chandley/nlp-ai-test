@@ -29,6 +29,10 @@ const boeingStory = "The government has warned aircraft manufacturer Boeing it c
 "the chorus of disapproval, branding the ruling “unjustified” and vowing to work with Canada – where Bombardier is based – to get it overturned."
 
 func main() {
+	analyseStory(boeingStory)
+}
+
+func analyseStory(story string) {
 	ctx := context.Background()
 
 	// Creates a client.
@@ -37,24 +41,21 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	// Sets the text to analyze.
-	text := boeingStory
-
-	// Detects the sentiment of the text.
+	// Detects the sentiment of the story.
 	sentiment, err := client.AnalyzeSentiment(ctx, &languagepb.AnalyzeSentimentRequest{
 		Document: &languagepb.Document{
 			Source: &languagepb.Document_Content{
-				Content: text,
+				Content: story,
 			},
 			Type: languagepb.Document_PLAIN_TEXT,
 		},
 		EncodingType: languagepb.EncodingType_UTF8,
 	})
 	if err != nil {
-		log.Fatalf("Failed to analyze text: %v", err)
+		log.Fatalf("Failed to analyze story: %v", err)
 	}
 
-	fmt.Printf("Text: %v\n", text)
+	fmt.Printf("text: %v\n", story)
 	if sentiment.DocumentSentiment.Score >= 0 {
 		fmt.Printf("Sentiment: positive, score: %v", sentiment.DocumentSentiment.Score)
 	} else {
@@ -65,7 +66,7 @@ func main() {
 	response, err := client.AnalyzeEntities(ctx, &languagepb.AnalyzeEntitiesRequest{
 		Document: &languagepb.Document{
 			Source: &languagepb.Document_Content{
-				Content: text,
+				Content: story,
 			},
 			Type: languagepb.Document_PLAIN_TEXT,
 		},
@@ -88,8 +89,6 @@ func main() {
 		}
 	}
 }
-
-
 
 
 
