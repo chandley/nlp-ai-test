@@ -2,6 +2,8 @@
 // sentiment of "Hello, world!".
 package main
 
+
+
 import (
 	"fmt"
 	"log"
@@ -11,7 +13,60 @@ import (
 	languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
 	"io/ioutil"
 	"net/http"
+	"encoding/json"
 )
+
+
+type Company struct {
+	Name                     string `json:"name"`
+	States            []interface{} `json:"states"`
+	ProductAttributes struct {
+		Muni struct {
+			MunicipalsSectors []interface{} `json:"municipalsSectors"`
+		} `json:"muni"`
+		Debtwire struct {
+			DominantSector struct {
+				Code  string `json:"code"`
+				Value string `json:"value"`
+			} `json:"dominantSector"`
+			DominantCountry struct {
+				Code  string `json:"code"`
+				Value string `json:"value"`
+			} `json:"dominantCountry"`
+			//Universes []struct {
+			//	Mmgid              string `json:"mmgid"`
+			//	UniverseType       string `json:"universeType"`
+			//	Name               string `json:"name"`
+			//	SiteEditionTagging []struct {
+			//		ID      string `json:"id"`
+			//		Edition string `json:"edition"`
+			//		Product string `json:"product"`
+			//		Mmgid   string `json:"mmgid"`
+			//	} `json:"siteEditionTagging"`
+			//} `json:"universes"`
+		} `json:"debtwire"`
+	} `json:"productAttributes"`
+	Headquarters struct {
+	} `json:"headquarters"`
+	Identifiers      struct {
+	} `json:"identifiers"`
+	Sectors                  []struct {
+		Code  string `json:"code"`
+		Value string `json:"value"`
+	} `json:"sectors"`
+	Subsectors []struct {
+		Code  string `json:"code"`
+		Value string `json:"value"`
+	} `json:"subsectors"`
+	Countries []struct {
+		Code  string `json:"code"`
+		Value string `json:"value"`
+	} `json:"countries"`
+	Description    string        `json:"description"`
+	Aliases        []interface{} `json:"aliases"`
+	Mmgid          string        `json:"mmgid"`
+	PublishingName string        `json:"publishingName"`
+}
 
 const ryanairStory = "Ryanair is facing enforcement action from the Civil Aviation Authority for persistently misleading passengers" +
 " about their rights, piling more woe on the no-frills carrier as it announced a second wave of flight cancellations that will " +
@@ -98,7 +153,15 @@ func main() {
 	}
 	defer resp.Body.Close()
 	body, err = ioutil.ReadAll(resp.Body)
-	fmt.Println("get details:\n", string(body))
+
+	var company Company
+	if err := json.Unmarshal(body, &company); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Company was %s (%s) with attributes %v", company.Name, company.Description, company.ProductAttributes.Debtwire)
+
+	//fmt.Println("get details:\n", string(body))
 }
 
 
