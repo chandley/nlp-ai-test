@@ -16,6 +16,14 @@ import (
 	"encoding/json"
 )
 
+type SearchResults struct {
+	//Total     int `json:"total"`
+	Companies []struct {
+		ID         string `json:"id"`
+		Name       string `json:"name"`
+		IntelCount int    `json:"intelCount"`
+	} `json:"companies"`
+}
 
 type Company struct {
 	Name                     string `json:"name"`
@@ -145,7 +153,16 @@ func main() {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("get company search:\n", string(body))
+
+	var results SearchResults
+	if err := json.Unmarshal(body, &results); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Got %+v", results)
+
+	//fmt.Println("get company search:\n", string(body))
+
 
 	resp, err = http.Get("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-13323")
 	if err != nil {
