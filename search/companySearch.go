@@ -58,8 +58,13 @@ type Company struct {
 	PublishingName string        `json:"publishingName"`
 }
 
+type CompanyViewModel struct {
+	Name string
+	Sector string
+	Country string
+}
 
-func SearchForCompanies(companyName string) string {
+func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
   returnString := ""
   
 	url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
@@ -79,17 +84,20 @@ func SearchForCompanies(companyName string) string {
 	//fmt.Printf("Got %+v", results)
 	returnString += "set of results\n"
 
+	var companyDetails []CompanyViewModel
+
 	sort.Slice(results.Companies, func(i, j int) bool { return results.Companies[i].IntelCount > results.Companies[j].IntelCount })
 	for _, company := range results.Companies {
-		returnString += GetDetailsForCompany(company.ID)
+		companyVm := GetDetailsForCompany(company.ID)
+		companyDetails = append(companyDetails, companyVm)
 		break
 	}
 
-  return returnString
+  return returnString, companyDetails
 }
 
-func GetDetailsForCompany(id string) string {
-  returnString := ""
+func GetDetailsForCompany(id string) CompanyViewModel {
+
 
 	url:= fmt.Sprintf("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-%s", id)
 
@@ -105,10 +113,10 @@ func GetDetailsForCompany(id string) string {
 		panic(err)
 	}
 
-	returnString += fmt.Sprintf("Company was %s with Sector: %s, Country: %s\n", company.Name, company.ProductAttributes.Debtwire.DominantSector.Value, company.ProductAttributes.Debtwire.DominantCountry.Value)
-	returnString += company.Description
-	returnString += "\n"
+	//returnString += fmt.Sprintf("Company was %s with Sector: %s, Country: %s\n", company.Name, company.ProductAttributes.Debtwire.DominantSector.Value, company.ProductAttributes.Debtwire.DominantCountry.Value)
+	//returnString += company.Description
+	//returnString += "\n"
 
-  return returnString
+  return CompanyViewModel{Name: company.Name, Sector: company.ProductAttributes.Debtwire.DominantSector.Value, Country: company.ProductAttributes.Debtwire.DominantCountry.Value}
 }
 

@@ -101,8 +101,9 @@ func analyseStory(story string) string {
 		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
 			returnString += fmt.Sprintf("Entity %s: %+v", i, entity.Name)
       returnString += "\n"
+      _, companyVMreturn := search.SearchForCompanies(entity.Name)
       returnString += "\n"
-			returnString += fmt.Sprintf(search.SearchForCompanies(entity.Name))
+			returnString += fmt.Sprintf("name %s, sector: %s, country: %s", companyVMreturn[0].Name, companyVMreturn[0].Sector, companyVMreturn[0].Country)
 		}
 	}
 
