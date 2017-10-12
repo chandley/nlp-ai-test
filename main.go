@@ -5,12 +5,12 @@ package main
 import (
 	"fmt"
 	"log"
-
 	// Imports the Google Cloud Natural Language API client package.
 	language "cloud.google.com/go/language/apiv1"
 	"golang.org/x/net/context"
 	languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
-
+	"io/ioutil"
+	"net/http"
 )
 
 const ryanairStory = "Ryanair is facing enforcement action from the Civil Aviation Authority for persistently misleading passengers" +
@@ -77,11 +77,30 @@ func main() {
 	const SALIENCE_THRESHOLD = 0.05
 	fmt.Println()
 	for i, entity := range response.Entities {
-		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
+		//if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
 			fmt.Printf("Entity %v: %+v", i, entity)
-			fmt.Println()
-		}
+			fmt.Println(" ")
+			//fmt.Println()
+		//}
 	}
+
+	resp, err := http.Get("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=bombardier&e=8_1,8_2,8_8&startFrom=0&pageSize=10")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("get company search:\n", string(body))
+
+	resp, err = http.Get("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-13323")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err = ioutil.ReadAll(resp.Body)
+	fmt.Println("get details:\n", string(body))
 }
+
+
 
 
