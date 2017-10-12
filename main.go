@@ -140,26 +140,13 @@ func main() {
 	const SALIENCE_THRESHOLD = 0.05
 	fmt.Println()
 	for i, entity := range response.Entities {
-		//if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
-			fmt.Printf("Entity %v: %+v", i, entity)
+		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
+			fmt.Printf("Entity %s: %+v", i, entity.Name)
 			fmt.Println(" ")
+      SearchForCompanies(entity.Name)
 			//fmt.Println()
-		//}
+		}
 	}
-
-	resp, err := http.Get("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=bombardier&e=8_1,8_2,8_8&startFrom=0&pageSize=10")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	var results SearchResults
-	if err := json.Unmarshal(body, &results); err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Got %+v", results)
 
 	//fmt.Println("get company search:\n", string(body))
 
@@ -179,6 +166,24 @@ func main() {
 	fmt.Printf("Company was %s (%s) with attributes %v", company.Name, company.Description, company.ProductAttributes.Debtwire)
 
 	//fmt.Println("get details:\n", string(body))
+
+  func SearchForCompanies(companyName string) {
+    url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
+
+    resp, err := http.Get(url)
+    if err != nil {
+      panic(err)
+    }
+    defer resp.Body.Close()
+    body, err := ioutil.ReadAll(resp.Body)
+
+    var results SearchResults
+    if err := json.Unmarshal(body, &results); err != nil {
+      panic(err)
+    }
+
+    fmt.Printf("Got %+v", results)
+  }
 }
 
 
