@@ -46,11 +46,11 @@ func inputHandler(w http.ResponseWriter, r *http.Request) {
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
     body := r.FormValue("body")
-    analyseStory(body)
+    fmt.Printf(analyseStory(body))
     http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func analyseStory(story string) {
+func analyseStory(story string) string {
 	ctx := context.Background()
 
 	// Creates a client.
@@ -73,13 +73,15 @@ func analyseStory(story string) {
 		log.Fatalf("Failed to analyze story: %v", err)
 	}
 
-	fmt.Printf("text: %v\n", story)
+  returnString := ""
+
+	returnString += fmt.Sprintf("text: %v\n", story)
 	if sentiment.DocumentSentiment.Score >= 0 {
-		fmt.Printf("Sentiment: positive, score: %v", sentiment.DocumentSentiment.Score)
+		returnString += fmt.Sprintf("Sentiment: positive, score: %v", sentiment.DocumentSentiment.Score)
 	} else {
-		fmt.Printf("Sentiment: negative, score: %v", sentiment.DocumentSentiment.Score)
+		returnString += fmt.Sprintf("Sentiment: negative, score: %v", sentiment.DocumentSentiment.Score)
 	}
-	fmt.Println()
+	returnString += "\n"
 
 	response, err := client.AnalyzeEntities(ctx, &languagepb.AnalyzeEntitiesRequest{
 		Document: &languagepb.Document{
@@ -93,17 +95,19 @@ func analyseStory(story string) {
 	if err != nil {
 		log.Fatalf("Failed to analyze entities: %v", err)
 	}
-	//fmt.Printf("Entites detected: %v", response)
 	const SALIENCE_THRESHOLD = 0.05
-	fmt.Println()
+	returnString += "\n"
+
 	for i, entity := range response.Entities {
 		if entity.Type == languagepb.Entity_ORGANIZATION && entity.Salience > SALIENCE_THRESHOLD{
-			fmt.Printf("Entity %s: %+v", i, entity.Name)
-			fmt.Println(" ")
-			fmt.Println(" ")
-			fmt.Printf(search.SearchForCompanies(entity.Name))
+			returnString += fmt.Sprintf("Entity %s: %+v", i, entity.Name)
+      returnString += "\n"
+      returnString += "\n"
+			returnString += fmt.Sprintf(search.SearchForCompanies(entity.Name))
 		}
 	}
+
+  return returnString
 }
 
 
