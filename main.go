@@ -74,11 +74,11 @@ func analyseStory(story string) string {
 
   returnString := ""
 
-	returnString += fmt.Sprintf("text: %v\n", story)
+	returnString += fmt.Sprintf("text: %v\n\n", story)
 	if sentiment.DocumentSentiment.Score >= 0 {
-		returnString += fmt.Sprintf("Sentiment: positive, score: %v", sentiment.DocumentSentiment.Score)
+		returnString += fmt.Sprintf("Sentiment: positive, score: %.2f", sentiment.DocumentSentiment.Score)
 	} else {
-		returnString += fmt.Sprintf("Sentiment: negative, score: %v", sentiment.DocumentSentiment.Score)
+		returnString += fmt.Sprintf("Sentiment: negative, score: %.2f", sentiment.DocumentSentiment.Score)
 	}
 	returnString += "\n"
 
@@ -107,6 +107,9 @@ func analyseStory(story string) string {
 			  returnString += "\n"
 			  returnString += fmt.Sprintf("name %s, sector: %s, country: %s", vm.Name, vm.Sector, vm.Country)
 			}
+      
+      returnString += "\n"
+      returnString += "\n"
 		}
 	}
 
