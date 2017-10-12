@@ -145,14 +145,14 @@ func main() {
 			fmt.Println(" ")
 			fmt.Println(" ")
 			SearchForCompanies(entity.Name)
-			break
+			//break
 			//fmt.Println()
 		}
 	}
 
 	//fmt.Println("get company search:\n", string(body))
 
-	GetDetailsForCompany("13323")
+	//GetDetailsForCompany("13323")
 
 	//fmt.Println("get details:\n", string(body))
 
@@ -174,7 +174,12 @@ func SearchForCompanies(companyName string) {
 		panic(err)
 	}
 
-	fmt.Printf("Got %+v", results)
+	//fmt.Printf("Got %+v", results)
+	fmt.Println("set of results")
+	for _, company := range results.Companies {
+		fmt.Println()
+		GetDetailsForCompany(company.ID)
+	}
 }
 
 func GetDetailsForCompany(id string) {
