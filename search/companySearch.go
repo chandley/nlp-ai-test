@@ -63,6 +63,7 @@ type CompanyViewModel struct {
 	Name string
 	Sector string
 	Country string
+  ID string
 }
 
 func SearchForCompanies(companyName string) (string, []CompanyViewModel) {
@@ -121,6 +122,6 @@ func GetDetailsForCompany(id string) CompanyViewModel {
 	//returnString += company.Description
 	//returnString += "\n"
 
-  return CompanyViewModel{Name: company.Name, Sector: company.ProductAttributes.Debtwire.DominantSector.Value, Country: company.ProductAttributes.Debtwire.DominantCountry.Value}
+  return CompanyViewModel{Name: company.Name, Sector: company.ProductAttributes.Debtwire.DominantSector.Value, Country: company.ProductAttributes.Debtwire.DominantCountry.Value, ID: company.Mmgid}
 }
 

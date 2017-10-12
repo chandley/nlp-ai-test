@@ -105,7 +105,7 @@ func analyseStory(story string) string {
 
 			for _, vm := range companyVMreturn {
 			  returnString += "\n"
-			  returnString += fmt.Sprintf("name %s, sector: %s, country: %s", vm.Name, vm.Sector, vm.Country)
+        returnString += fmt.Sprintf("name: %s, sector: %s, country: %s, mmgid: %s", vm.Name, vm.Sector, vm.Country, vm.ID)
 			}
       
       returnString += "\n"
