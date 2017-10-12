@@ -1,8 +1,4 @@
-// Sample language-quickstart uses the Google Cloud Natural API to analyze the
-// sentiment of "Hello, world!".
 package main
-
-
 
 import (
 	"fmt"
@@ -14,10 +10,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"encoding/json"
+	"sort"
 )
 
 type SearchResults struct {
-	//Total     int `json:"total"`
 	Companies []struct {
 		ID         string `json:"id"`
 		Name       string `json:"name"`
@@ -41,17 +37,6 @@ type Company struct {
 				Code  string `json:"code"`
 				Value string `json:"value"`
 			} `json:"dominantCountry"`
-			//Universes []struct {
-			//	Mmgid              string `json:"mmgid"`
-			//	UniverseType       string `json:"universeType"`
-			//	Name               string `json:"name"`
-			//	SiteEditionTagging []struct {
-			//		ID      string `json:"id"`
-			//		Edition string `json:"edition"`
-			//		Product string `json:"product"`
-			//		Mmgid   string `json:"mmgid"`
-			//	} `json:"siteEditionTagging"`
-			//} `json:"universes"`
 		} `json:"debtwire"`
 	} `json:"productAttributes"`
 	Headquarters struct {
@@ -149,14 +134,6 @@ func main() {
 			//fmt.Println()
 		}
 	}
-
-	//fmt.Println("get company search:\n", string(body))
-
-	//GetDetailsForCompany("13323")
-
-	//fmt.Println("get details:\n", string(body))
-
-
 }
 
 func SearchForCompanies(companyName string) {
@@ -176,6 +153,7 @@ func SearchForCompanies(companyName string) {
 
 	//fmt.Printf("Got %+v", results)
 	fmt.Println("set of results")
+	sort.Slice(results.Companies, func(i, j int) bool { return results.Companies[i].IntelCount > results.Companies[j].IntelCount })
 	for _, company := range results.Companies {
 		fmt.Println()
 		GetDetailsForCompany(company.ID)
