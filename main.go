@@ -151,12 +151,12 @@ func main() {
 	//fmt.Println("get company search:\n", string(body))
 
 
-	resp, err = http.Get("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-13323")
+	resp, err := http.Get("https://aslive-company-store.dev.mmgapi.net/company?mmgid=prime-13323")
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	body, err = ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 
 	var company Company
 	if err := json.Unmarshal(body, &company); err != nil {
@@ -167,23 +167,25 @@ func main() {
 
 	//fmt.Println("get details:\n", string(body))
 
-  func SearchForCompanies(companyName string) {
-    url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
 
-    resp, err := http.Get(url)
-    if err != nil {
-      panic(err)
-    }
-    defer resp.Body.Close()
-    body, err := ioutil.ReadAll(resp.Body)
+}
 
-    var results SearchResults
-    if err := json.Unmarshal(body, &results); err != nil {
-      panic(err)
-    }
+func SearchForCompanies(companyName string) {
+	url:= fmt.Sprintf("https://aslive-intel-search-service.dev.mmgapi.net/search/issuer?q=%s&e=8_1,8_2,8_8&startFrom=0&pageSize=10", companyName)
 
-    fmt.Printf("Got %+v", results)
-  }
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	var results SearchResults
+	if err := json.Unmarshal(body, &results); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Got %+v", results)
 }
 
 
