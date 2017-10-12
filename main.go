@@ -30,8 +30,6 @@ const boeingStory = "The government has warned aircraft manufacturer Boeing it c
 "the chorus of disapproval, branding the ruling “unjustified” and vowing to work with Canada – where Bombardier is based – to get it overturned."
 
 func main() {
-	analyseStory(boeingStory)
-
   http.HandleFunc("/", inputHandler)
   http.HandleFunc("/save", saveHandler)
   http.ListenAndServe(":8080", nil)
@@ -40,7 +38,7 @@ func main() {
 func inputHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "<h1>Paste your story</h1>"+
         "<form action=\"/save\" method=\"POST\">"+
-        "<textarea name=\"body\">%s</textarea><br>"+
+        "<textarea style=\"height: 200px; width: 500px;\" name=\"body\">%s</textarea><br>"+
         "<input type=\"submit\" value=\"Save\">"+
         "</form>",
         "Input text here")
